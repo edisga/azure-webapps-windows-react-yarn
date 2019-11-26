@@ -100,7 +100,7 @@ echo Installing Yarn Packages.
 echo "Executing yarn install"
 call :ExecuteCmd yarn install
 echo "Executing yarn run build"
-call :ExecuteCmd yarn run build
+call :ExecuteCmd yarn build
 
 
 ls
