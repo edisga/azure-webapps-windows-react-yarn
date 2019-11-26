@@ -2,7 +2,7 @@
 
 :: ----------------------
 :: KUDU Deployment Script
-:: Version: 1.0.8
+:: Version: 1.0.9
 :: ----------------------
 
 :: Prerequisites
@@ -88,27 +88,27 @@ goto :EOF
 :Deployment
 echo Handling node.js deployment.
 
-:: 1. Select node version
+:: 1. KuduSync
+IF /I "%IN_PLACE_DEPLOYMENT%" NEQ "1" (
+  call :ExecuteCmd "%KUDU_SYNC_CMD%" -v 50 -f "%DEPLOYMENT_SOURCE%" -t "%DEPLOYMENT_TARGET%" -n "%NEXT_MANIFEST_PATH%" -p "%PREVIOUS_MANIFEST_PATH%" -i ".git;.hg;.deployment;deploy.cmd"
+  IF !ERRORLEVEL! NEQ 0 goto error
+)
+
+:: 2. Select node version
 call :SelectNodeVersion
 
-:: 2. Install Yarn
+:: 3. Install Yarn
 echo Verifying Yarn Install.
 call :ExecuteCmd !NPM_CMD! install yarn -g
- 
-:: 3. Install Yarn packages
+
+:: 4. Install Yarn packages
 echo Installing Yarn Packages.
-echo "Executing yarn install"
-call :ExecuteCmd yarn install
-echo "Executing yarn run build"
-call :ExecuteCmd yarn build
-
-
-ls
-
-:: 4. KuduSync
-IF /I "%IN_PLACE_DEPLOYMENT%" NEQ "1" (
-  call :ExecuteCmd "%KUDU_SYNC_CMD%" -v 50 -f "%DEPLOYMENT_SOURCE%\build" -t "%DEPLOYMENT_TARGET%" -n "%NEXT_MANIFEST_PATH%" -p "%PREVIOUS_MANIFEST_PATH%" -i ".git;.hg;.deployment;deploy.cmd"
+IF EXIST "%DEPLOYMENT_TARGET%\package.json" (
+  pushd "%DEPLOYMENT_TARGET%"
+  call :ExecuteCmd yarn install --production
+  call :ExecuteCmd yarn build 
   IF !ERRORLEVEL! NEQ 0 goto error
+  popd
 )
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
