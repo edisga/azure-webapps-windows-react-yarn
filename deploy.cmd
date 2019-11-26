@@ -98,7 +98,7 @@ call :ExecuteCmd !NPM_CMD! install yarn -g
 :: 3. Install Yarn packages
 echo Installing Yarn Packages.
 echo "Executing yarn install"
-call :ExecuteCmd yarn install --production
+call :ExecuteCmd yarn install
 echo "Executing yarn run build"
 call :ExecuteCmd yarn run build
 
