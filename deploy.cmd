@@ -97,15 +97,11 @@ call :ExecuteCmd !NPM_CMD! install yarn -g
  
 :: 3. Install Yarn packages
 echo Installing Yarn Packages.
-IF EXIST "%DEPLOYMENT_TARGET%\package.json" (
-  pushd "%DEPLOYMENT_TARGET%"
-  echo "Executing yarn install"
-  call :ExecuteCmd yarn install --production
-  echo "Executing yarn run build"
-  call :ExecuteCmd yarn run build
-  IF !ERRORLEVEL! NEQ 0 goto error
-  popd
-)
+echo "Executing yarn install"
+call :ExecuteCmd yarn install --production
+echo "Executing yarn run build"
+call :ExecuteCmd yarn run build
+
 
 ls
 
